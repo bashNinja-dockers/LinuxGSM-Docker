@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+#if [ ! -f "/opt/lgsm/gameserver" ]; then
+#    cd /opt/lgsm/
+#    exec \
+#        s6-setuidgid abc /opt/lgsm/linuxgsm.sh gameserver
+#    exec \
+#        s6-setuidgid abc /opt/lgsm/gameserver auto-install
+#fi

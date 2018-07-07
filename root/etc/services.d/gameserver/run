@@ -1,21 +1,21 @@
-#!/bin/bash
+#!/usr/bin/with-contenv bash
 ## linuxgsm-docker base image entrypoint script
 ## execute LinuxGSM or arbitrary server commands at will
 ## by passing command
-
 
 ## Because of a limitation in LinuxGSM script it must be run from the directory
 ## It is installed in.
 ##
 ## If one wants to use a volume for the data directory, which is the home directory
 ## then we must keep a backup copy of the script on local drive
-if [ ! -e ~/linuxgsm.sh ]; then
-    echo "Initializing Linuxgsm User Script in New Volume"
-    cp /linuxgsm.sh ./linuxgsm.sh
-fi
 
 # with no command, just spawn a running container suitable for exec's
 if [ $# = 0 ]; then
+    #if [ ! -f "/opt/lgsm/gameserver" ]; then
+    #    cd /opt/lgsm/
+    #    exec \
+    #        s6-setuidgid abc /opt/lgsm/gameserver start
+    #fi
     tail -f /dev/null
 else
     # execute the command passed through docker

@@ -3,9 +3,13 @@
 #
 # https://github.com/GameServerManagers/LinuxGSM-Docker
 #
+FROM lsiobase/xenial
+MAINTAINER Mike Weaver <>
 
-FROM ubuntu:16.04
-LABEL maintainer="LinuxGSM <me@Danielgibbs.co.uk>"
+# set version label
+ARG BUILD_DATE
+ARG VERSION
+LABEL build_version="Linuxserver.io version:- ${VERSION} Build-date:- ${BUILD_DATE}"
 
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -54,25 +58,19 @@ RUN dpkg --add-architecture i386 && \
 		libgtk2.0-0:i386 \
 		libdbus-glib-1-2:i386 \
 		libnm-glib-dev:i386
-
 ## lgsm.sh
-RUN wget https://linuxgsm.com/dl/linuxgsm.sh
-
-## user config
-RUN adduser --disabled-password --gecos "" lgsm && \
-	chown lgsm:lgsm /linuxgsm.sh && \
-	chmod +x /linuxgsm.sh && \
-	cp /linuxgsm.sh /home/lgsm/linuxgsm.sh && \
-	usermod -G tty lgsm
-
-USER lgsm
-WORKDIR /home/lgsm
-
+RUN	mkdir -p /opt/lgsm/ && \
+	wget https://linuxgsm.com/dl/linuxgsm.sh -O /opt/lgsm/linuxgsm.sh && \
+	chmod +x /opt/lgsm/linuxgsm.sh && \
+# Cleanup
+    apt-get clean -y && \
+    apt-get autoremove -y && \
+    rm -rfv /tmp/* /var/lib/apt/lists/* /var/tmp/* 
 # need use xterm for LinuxGSM
 ENV TERM=xterm
 
-## Docker Details
-ENV PATH=$PATH:/home/lgsm
+COPY root/ /
 
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["bash","/entrypoint.sh" ]
+EXPOSE 1194 443 80
+
+VOLUME /config
